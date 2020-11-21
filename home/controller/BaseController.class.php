@@ -19,7 +19,6 @@ class BaseController{
 		$wc_arr=['Pay','Login'];
 		if(!in_array(CONTROLLER_NAME,$wc_arr)){
 			if($_ENV['pageuser']['gid']&&!in_array($_ENV['pageuser']['gid'],[91])){
-			    throw new Exception('非码商用户无法访问');
 				jReturn('-1','非码商用户无法访问');
 				exit;
 			}

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="101.32.209.152" id="2286b023-2ada-4888-a09d-89b9fedc2a34" port="22" customName="wepay" nameFormat="CUSTOM" username="root">
+        <option name="customName" value="wepay" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>

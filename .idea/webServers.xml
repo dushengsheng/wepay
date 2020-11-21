@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="d7c002c9-e6a0-4d1b-80e2-c52fdd7f8913" name="wepay" url="http://www.wepay.fun">
+        <fileTransfer rootFolder="/www/server/wepay/959" accessType="SFTP" host="101.32.209.152" port="22" sshConfigId="2286b023-2ada-4888-a09d-89b9fedc2a34" sshConfig="wepay">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

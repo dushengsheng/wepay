@@ -844,9 +844,10 @@ function closeDb($_var_17, $_var_160 = '')
 	unset($_var_17);
 	return true;
 }
-function phpErrorLogTest($params)
+function phpErrorLogTest($info, $params)
 {
-    error_log('phpErrorLogTest:');
+    error_log("phpErrorLogTest: $info:");
+
     if (is_array($params))
     {
         $output = '';
@@ -858,6 +859,6 @@ function phpErrorLogTest($params)
     }
     else
     {
-        error_log('param = ' . $params);
+        error_log("param = " . $params);
     }
 }

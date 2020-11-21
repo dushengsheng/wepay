@@ -249,7 +249,7 @@ class Worker
      *
      * @var bool
      */
-    public static $daemonize = true;
+    public static $daemonize = false;
 
     /**
      * Stdout file.

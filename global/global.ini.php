@@ -1,5 +1,5 @@
 <?php
-@header("content-Type: text/html; charset=utf-8");
+header("content-Type: text/html; charset=utf-8");
 if(!defined("APP_DEBUG")) define('APP_DEBUG',false);
 if(!defined("ROOT_PATH")) define("ROOT_PATH",dirname(__FILE__).'/../');
 define('GLOBAL_PATH',ROOT_PATH.'global/');

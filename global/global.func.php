@@ -844,3 +844,20 @@ function closeDb($_var_17, $_var_160 = '')
 	unset($_var_17);
 	return true;
 }
+function phpErrorLogTest($params)
+{
+    error_log('phpErrorLogTest:');
+    if (is_array($params))
+    {
+        $output = '';
+        foreach ($params as $key => $value)
+        {
+            $output = $output . "params[$key] = " . $value . PHP_EOL;
+        }
+        error_log($output);
+    }
+    else
+    {
+        error_log('param = ' . $params);
+    }
+}

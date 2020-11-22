@@ -30,6 +30,11 @@
                     <i class="layui-icon layui-icon-refresh-3"></i>
                     </a>
                 </li>
+                    <li class="layui-nav-item"  lay-unselect>
+                    <a  id ='test' href="javascript:;" title="订单详情">
+                    <i class="layui-icon layui-icon-app"></i>
+                    </a>
+                </li>
                 <!--
                 <li class="layui-nav-item layui-hide-xs" lay-unselect>
                     <input type="text" placeholder="搜索..." autocomplete="off" class="layui-input layui-input-search" layadmin-event="serach"> 
@@ -219,6 +224,14 @@ $('a[layadmin-event="fullscreen"]').on('click',function(){
       }
 });
 
+$('#test').on('click',function(){
+    var othis=$(this);
+      location.hash = '/Pay/order';
+      routerAct();
+});
+
+
+
 $('a[layadmin-event="clearCache"]').on('click',function(){
 	ajax({
 		url:global.appurl+'a=clearCache',
@@ -389,7 +402,9 @@ function correctRouter(href){
 function locationHash(elem){
     var url=elem.attr('data-url');
     if(url){
+        console.log(url);
         location.href=url;
+        
         return;
     }
     var dhref=elem.attr('data-href');
@@ -397,6 +412,7 @@ function locationHash(elem){
         return;
     }
     //$('.layui-this').removeClass('layui-this');
+     console.log(correctRouter(dhref));
     location.hash=correctRouter(dhref);
     routerAct();
 }

@@ -106,11 +106,13 @@ class PayController extends BaseController{
 	private function getMtype($user){
 		$td_switch=json_decode($user['td_switch'],true);
 		$td_switch_arr=[];
+		if($td_switch.length >0){
 		foreach($td_switch as $tk=>$tv){
 			if($tv<1){
 				continue;
 			}
 			$td_switch_arr[]=$tk;
+		}
 		}
 		$td_switch_str=implode(',',$td_switch_arr);
 		$where="where is_open=1";

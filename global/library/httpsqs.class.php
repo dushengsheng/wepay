@@ -190,4 +190,37 @@ class httpsqs
     public function reset($queue_name)
     {
         $result = $this->http_get("/?auth=".$this->httpsqs_auth."&charset=".$this->httpsqs_charset."&name=".$queue_name."&opt=reset");
-       
+                if ($result["data"] == "HTTPSQS_RESET_OK") {
+                        return true;
+                }
+        return false;
+    }
+        
+    public function maxqueue($queue_name, $num)
+    {
+        $result = $this->http_get("/?auth=".$this->httpsqs_auth."&charset=".$this->httpsqs_charset."&name=".$queue_name."&opt=maxqueue&num=".$num);
+                if ($result["data"] == "HTTPSQS_MAXQUEUE_OK") {
+                        return true;
+                }
+        return false;
+    }
+        
+    public function status_json($queue_name)
+    {
+        $result = $this->http_get("/?auth=".$this->httpsqs_auth."&charset=".$this->httpsqs_charset."&name=".$queue_name."&opt=status_json");
+                if ($result == false || $result["data"] == "HTTPSQS_ERROR" || $result["data"] == false) {
+                        return false;
+                }
+        return $result["data"];
+    }
+
+    public function synctime($num)
+    {
+        $result = $this->http_get("/?auth=".$this->httpsqs_auth."&charset=".$this->httpsqs_charset."&name=httpsqs_synctime&opt=synctime&num=".$num);
+                if ($result["data"] == "HTTPSQS_SYNCTIME_OK") {
+                        return true;
+                }
+        return false;
+    }
+}
+?>

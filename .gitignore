@@ -1,0 +1,5 @@
+*.log
+cache/
+uploads/
+my.php
+logs/

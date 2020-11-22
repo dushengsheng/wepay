@@ -404,16 +404,16 @@ class UserController extends BaseController{
 		if($params['type']!=1&&$params['type']!=2){
 			jReturn('-1','未知修改类型');
 		}
-        if(!$params['smscode']){
-            jReturn('-1','请输入短信验证码');
-        }
+        //if(!$params['smscode']){
+        //    jReturn('-1','请输入短信验证码');
+        //}
 		if(!$params['newpwd']){
 			jReturn('-1','请填写新密码');
 		}
-		$checkSms=checkPhoneCode(['stype'=>4,'phone'=>$pageuser['phone'],'code'=>$params['smscode']]);
-		if($checkSms['code']!=1){
-			exit(json_encode($checkSms));
-		}
+		//$checkSms=checkPhoneCode(['stype'=>4,'phone'=>$pageuser['phone'],'code'=>$params['smscode']]);
+		//if($checkSms['code']!=1){
+		//	exit(json_encode($checkSms));
+		//}
 		
 		$params['newpwd']=getPassword($params['newpwd']);
 		$sys_user=[];

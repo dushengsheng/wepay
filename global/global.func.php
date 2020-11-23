@@ -847,18 +847,5 @@ function closeDb($_var_17, $_var_160 = '')
 function phpErrorLogTest($info, $params)
 {
     error_log("phpErrorLogTest: $info:");
-
-    if (is_array($params))
-    {
-        $output = '';
-        foreach ($params as $key => $value)
-        {
-            $output = $output . "params[$key] = " . $value . PHP_EOL;
-        }
-        error_log($output);
-    }
-    else
-    {
-        error_log("param = " . $params);
-    }
+    error_log("param = " . var_export($params, true));
 }

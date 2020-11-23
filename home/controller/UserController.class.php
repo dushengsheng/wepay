@@ -142,8 +142,6 @@ class UserController extends BaseController{
         $pageuser=checkLogin();
 		$params=$this->params;
 		$params['bank_id']=intval($params['bank_id']);
-		$params['province_id']=intval($params['province_id']);
-		$params['city_id']=intval($params['city_id']);
 		if(!$params['bank_id']){
 			jReturn('-1','请选择开户行');
 		}else{
@@ -170,8 +168,6 @@ class UserController extends BaseController{
 			'bank_id'=>$params['bank_id'],
 			'bank_account'=>$params['bank_account'],
 			'bank_realname'=>$params['bank_realname'],
-			'province_id'=>$params['province_id'],
-			'city_id'=>$params['city_id']
 		];
 		
 		$banklog=$this->mysql->fetchRow("select * from cnf_banklog where uid={$pageuser['id']}");

@@ -9,11 +9,9 @@ class FinanceController extends BaseController{
 	//#############################收款银行卡#############################
 	public function _bank(){
 		$pageuser=checkPower();
-		$province_arr=$this->mysql->fetchRows("select * from cnf_pc where pid=0");
 		$bank_arr=$this->mysql->fetchRows("select * from cnf_bank");
 		$data=array(
 			'user'=>$pageuser,
-			'province_arr'=>$province_arr,
 			'bank_arr'=>$bank_arr
 		);
 		display('Finance/bank.html',$data);
@@ -35,16 +33,12 @@ class FinanceController extends BaseController{
 		from sk_bank log 
 		left join sys_user u on log.uid=u.id 
 		left join cnf_bank bk on log.bank_id=bk.id 
-		left join cnf_pc pc on log.province_id=pc.id 
-		left join cnf_pc pc2 on log.city_id=pc2.id 
 		{$where}";
 		$count=$this->mysql->fetchResult($count_sql);
-		$sql="select log.*,u.account,u.nickname,pc.cname as province_name,pc2.cname as city_name,bk.bank_name 
+		$sql="select log.*,u.account,u.nickname,bk.bank_name 
 		from sk_bank log 
 		left join sys_user u on log.uid=u.id 
 		left join cnf_bank bk on log.bank_id=bk.id 
-		left join cnf_pc pc on log.province_id=pc.id 
-		left join cnf_pc pc2 on log.city_id=pc2.id 
 		{$where} order by log.sort desc,log.id desc";
 		$list=$this->mysql->fetchRows($sql,$params['page'],$this->pageSize);
 		$cnf_skbank_status=getConfig('cnf_skbank_status');
@@ -70,8 +64,6 @@ class FinanceController extends BaseController{
 	public function _bank_update(){
 		$pageuser=checkPower();
 		$params=$this->params;
-		$params['province_id']=intval($params['province_id']);
-		$params['city_id']=intval($params['city_id']);
 		$params['bank_id']=intval($params['bank_id']);
 		$params['sort']=intval($params['sort']);
 		$params['status']=intval($params['status']);
@@ -87,10 +79,7 @@ class FinanceController extends BaseController{
 		}else{
 			$uid=0;
 		}
-		
-		if($params['province_id']<1||$params['city_id']<1){
-			jReturn('-1','请选择银行卡开户所属省市');
-		}
+
 		if(!$params['bank_id']){
 			jReturn('-1','请选择开户行');
 		}else{
@@ -113,8 +102,6 @@ class FinanceController extends BaseController{
 		}
 		$sk_bank=array(
 			'uid'=>$uid,
-			'province_id'=>$params['province_id'],
-			'city_id'=>$params['city_id'],
 			'bank_id'=>$params['bank_id'],
 			'branch_name'=>$params['branch_name'],
 			'bank_account'=>$params['bank_account'],
@@ -608,10 +595,8 @@ class FinanceController extends BaseController{
 	
 	public function _banklog(){
 		checkLogin();
-		$province_arr=$this->mysql->fetchRows("select * from cnf_pc where pid=0");
 		$data=[
 			'bank_arr'=>$this->mysql->fetchRows("select * from cnf_bank"),
-			'province_arr'=>$province_arr
 		];
 		display('Finance/banklog.html',$data);
 	}
@@ -627,11 +612,8 @@ class FinanceController extends BaseController{
 		$where.=empty($params['s_bank_id'])?'':" and log.bank_id={$params['s_bank_id']}";
 		$where.=empty($params['s_keyword'])?'':" and (log.bank_account='{$params['s_keyword']}' or log.bank_realname='{$params['s_keyword']}')";
 		$count=$this->mysql->fetchResult("select count(1) from cnf_banklog log {$where}");
-		$sql="select log.*,b.bank_name,b.bank_code,pc.cname as province_name,
-		pc2.cname as city_name,u.nickname,u.account from cnf_banklog log 
+		$sql="select log.*,b.bank_name,b.bank_code,u.nickname,u.account from cnf_banklog log 
 		left join cnf_bank b on log.bank_id=b.id 
-		left join cnf_pc pc on log.province_id=pc.id
-		left join cnf_pc pc2 on log.city_id=pc2.id
 		left join sys_user u on log.uid=u.id {$where} order by log.id desc";
 		$list=$this->mysql->fetchRows($sql,$params['page'],$this->pageSize);
 		foreach($list as &$item){
@@ -650,20 +632,10 @@ class FinanceController extends BaseController{
 		$params=$this->params;
 		$item_id=intval($params['item_id']);
 		$bank_id=intval($params['bank_id']);
-		$province_id=intval($params['province_id']);
-		$city_id=intval($params['city_id']);
-		if($province_id<1){
-			jReturn('-1','请选择省份');
-		}
-		if($city_id<1){
-			jReturn('-1','请选择城市');
-		}
 		$data=array(
 			'bank_account'=>$params['bank_account'],
 			'bank_realname'=>$params['bank_realname'],
 			'bank_id'=>$bank_id,
-			'province_id'=>$province_id,
-			'city_id'=>$city_id
 		);
 		$bank=$this->mysql->fetchRow("select * from cnf_bank where id={$bank_id}");
 		if(!$bank||!$bank['status']){
@@ -804,8 +776,6 @@ class FinanceController extends BaseController{
 		$cnf_cashlog=[
 			'uid'=>$user['id'],
 			'csn'=>'C'.date('YmdHis').mt_rand(1000,9999),
-			//'province_id'=>$bank['province_id'],
-			//'city_id'=>$bank['city_id'],
 			'blog_id'=>$bank['id'],
 			'bank_account'=>$bank['bank_account'],
 			'bank_realname'=>$bank['bank_realname'],

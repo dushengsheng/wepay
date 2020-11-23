@@ -74,7 +74,6 @@ class PayController extends BaseController{
 		$user=$this->mysql->fetchRow("select * from sys_user where id={$pageuser['id']}");
 		$mtype_arr=$this->getMtype($user);
 		$bank_arr=rows2arr($this->mysql->fetchRows("select * from cnf_bank where status=1"));
-		$province_arr=$this->mysql->fetchRows("select * from cnf_pc where pid=0");
 		
 		$updateall=hasPower($pageuser,'Pay_skma_allupdate');
 		$data=[
@@ -82,7 +81,6 @@ class PayController extends BaseController{
 			'mtype_arr'=>$mtype_arr,
 			'bank_arr'=>$bank_arr,
 			'updateall'=>$updateall,
-			'province_arr'=>$province_arr,
 		];
 		display('Pay/skma.html',$data);
 	}
@@ -91,13 +89,11 @@ class PayController extends BaseController{
 		$pageuser=checkPower();
 		$user=$this->mysql->fetchRow("select * from sys_user where id={$pageuser['id']}");
 		$mtype_arr=$this->getMtype($user);
-		$province_arr=$this->mysql->fetchRows("select * from cnf_pc where pid=0");
 		$bank_arr=rows2arr($this->mysql->fetchRows("select * from cnf_bank where status=1"));
 		$data=[
 			'user'=>$user,
 			'mtype_arr'=>$mtype_arr,
 			'bank_arr'=>$bank_arr,
-			'province_arr'=>$province_arr,
 		];
 		display('Pay/skmaTrash.html',$data);
 	}
@@ -153,15 +149,13 @@ class PayController extends BaseController{
 		left join sk_mtype mt on log.mtype_id=mt.id 
 		left join sys_user u on log.uid=u.id {$where}";
 		$count_item=$this->mysql->fetchRow($sql_cnt);
-		$sql="select log.*,pro.cname as province_name,city.cname as city_name,
+		$sql="select log.*,
 		mt.name as mtype_name,mt.type as mtype_type,
 		bk.bank_name,u.account,u.nickname 
 		from sk_ma log 
 		left join sk_mtype mt on log.mtype_id=mt.id 
 		left join cnf_bank bk on log.bank_id=bk.id 
 		left join sys_user u on log.uid=u.id 
-		left join cnf_pc pro on log.province_id=pro.id 
-		left join cnf_pc city on log.city_id=city.id 
 		{$where} order by log.id desc";
 		$list=$this->mysql->fetchRows($sql,$params['page'],$this->pageSize);
 		
@@ -232,8 +226,6 @@ class PayController extends BaseController{
 		$item_id=intval($params['item_id']);
 		$params['mtype_id']=intval($params['mtype_id']);
 		$params['bank_id']=intval($params['bank_id']);
-		$params['province_id']=intval($params['province_id']);
-		$params['city_id']=intval($params['city_id']);
 		$params['status']=intval($params['status']);
 		$params['min_money']=floatval($params['min_money']);
 		$params['max_money']=floatval($params['max_money']);
@@ -247,11 +239,7 @@ class PayController extends BaseController{
 				jReturn('-1','该支付类型暂未开放');
 			}
 		}
-		
-		if(!$params['province_id']||!$params['city_id']){
-			jReturn('-1','请选择所在省份和城市');
-		}
-		
+
 		if(!$params['account']){
 			jReturn('-1','请填写所属账号');
 		}else{
@@ -309,8 +297,6 @@ class PayController extends BaseController{
 		
 		$sk_ma=array(
 			'mtype_id'=>$params['mtype_id'],
-			'province_id'=>$params['province_id'],
-			'city_id'=>$params['city_id'],
 			'ma_account'=>$params['ma_account'],
 			'ma_realname'=>$params['ma_realname'],
 			'status'=>$params['status'],
@@ -435,14 +421,6 @@ class PayController extends BaseController{
 		$res=$this->mysql->update($sk_ma,"uid={$account['id']} and status<99",'sk_ma');
 		jReturn('1','操作成功');
 	}
-	
-	public function _getCity(){
-		checkLogin();
-		$pid=intval($this->params['pid']);
-		$city_arr=$this->mysql->fetchRows("select * from cnf_pc where pid={$pid} and pid>0");
-		jReturn('1','ok',$city_arr);
-	}
-	
 	
 	/////////////////////////订单管理////////////////////////////
 	/////////////////////////订单管理////////////////////////////

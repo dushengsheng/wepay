@@ -275,8 +275,6 @@ class FinanceController extends BaseController{
 		$cnf_cashlog=[
 			'uid'=>$user['id'],
 			'csn'=>'C'.date('YmdHis').mt_rand(1000,9999),
-			//'province_id'=>$bank['province_id'],
-			//'city_id'=>$bank['city_id'],
 			'blog_id'=>$bank['id'],
 			'bank_account'=>$bank['bank_account'],
 			'bank_realname'=>$bank['bank_realname'],

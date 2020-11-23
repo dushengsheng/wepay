@@ -96,27 +96,6 @@ position:relative;}
                 </select>
             </div>
         </div>
-        <div class="layui-form-item layui-form-text">
-            <div class="layui-inline" style="margin-right:0;width:45%;">
-                <label class="layui-form-label">所在省份：</label>
-                <div class="layui-input-inline" style="width:160px;">
-					<select id="province_id" lay-filter="province_id">
-						<option value="0">请选择省份</option>
-						[[foreach from=$province_arr item=vo key=skey]]
-						<option value="[[$vo.id]]">[[$vo.cname]]</option>
-						[[/foreach]]
-					</select>
-                </div>
-            </div>
-            <div class="layui-inline" style="width:150px;width:45%;">
-                <label class="layui-form-label" style="width:60px;padding-left:0;">城市：</label>
-                <div class="layui-input-inline" style="width:160px;">
-					<select id="city_id">
-
-					</select>
-                </div>
-            </div>
-        </div>
         <div class="layui-form-item layui-form-text suserBox" style="{{#if(d.item.stype==2){}}display:none;{{#}}}">
             <label class="layui-form-label">所属用户：</label>
             <div class="layui-input-block">
@@ -309,8 +288,6 @@ $('#searchBtn').on('click',function(){
 				var qrcode='<img style="height:40px;" src="'+d.ma_qrcode+'"/ onclick="showImg(this);" >';
 				return qrcode;
 			}},
-			{field:'province_name', title: '省份'},
-			{field:'city_name', title: '城市'},
 			{field:'min_money', title: '单笔最小'},
 			{field:'max_money', title: '单笔最大'},
 			{field:'create_time', title: '创建时间',width:130},
@@ -450,8 +427,6 @@ function updateView(obj){
             });
 
             if(obj&&obj.data){
-				$('#province_id').val(item.province_id);
-				initPc(item.province_id,item.city_id);
                 $('input[name="status"][value="'+item.status+'"]').attr('checked',true);
                 $('#mtype_id').val(item.mtype_id).prop('disabled',true);
 				iniSetInput(item.mtype_id);
@@ -479,28 +454,6 @@ layui.form.on('select(mtype_id)', function(data){
 	iniSetInput(mtype_id);
 });
 
-//切换省份
-layui.form.on('select(province_id)', function(data){
-	var province_id=data.value;
-	initPc(province_id,0);
-});
-
-function initPc(province_id,city_id){
-	ajax({
-		url:global.appurl+'c=Pay&a=getCity',
-		data:{pid:province_id},
-		success:function(json){
-			var html='';
-			for(var i in json.data){
-				var item=json.data[i];
-				html+='<option value="'+item.id+'">'+item.cname+'</option>';
-			}
-			$('#city_id').html(html).val(city_id>0?city_id:0);
-			layui.form.render('select');
-		}
-	});
-}
-
 ///////////////////////////////////////
 
 
@@ -509,8 +462,6 @@ function saveBtn(ts){
     var obj=$(ts);
     var item_id=$('#item_id').val();
     var mtype_id=$.trim($('#mtype_id').val());
-    var province_id=$.trim($('#province_id').val());
-    var city_id=$.trim($('#city_id').val());
     var account=$.trim($('#account').val());
     var bank_id=$.trim($('#bank_id').val());
     var branch_name=$.trim($('#branch_name').val());
@@ -544,7 +495,7 @@ function saveBtn(ts){
     ajax({
         url:global.appurl+'c=Pay&a=skma_update',
         data:{
-			item_id:item_id,mtype_id:mtype_id,province_id:province_id,city_id:city_id,
+			item_id:item_id,mtype_id:mtype_id,
 			account:account,min_money:min_money,max_money:max_money,
 			bank_id:bank_id,ma_realname:ma_realname,ma_account:ma_account,
 			status:status,ma_qrcode:cover,branch_name:branch_name,
@@ -575,10 +526,6 @@ function saveBtn(ts){
                     status_flag:$('input[name="status"][value="'+status+'"]').attr('title'),
                     mtype_id:mtype_id,
                     mtype_name:$('#mtype_id').find('option[value="'+mtype_id+'"]').text(),
-					province_id:province_id,
-					city_id:city_id,
-					province_name:$('#province_id').find('option[value="'+province_id+'"]').text(),
-					city_name:$('#city_id').find('option[value="'+city_id+'"]').text()
                 };
 				var mtype_type=$('#mtype_id').find('option[value="'+mtype_id+'"]').attr('data-type');
 				if(mtype_type==2){

@@ -48,25 +48,6 @@ select{width:14rem;position: relative;height: 2.2rem;padding: 0 0.5rem;}
 		<a href="javascript:;" class="addIdNum" style="margin-left:0.7rem;">添加账号</a>
 	</div>
 	<div class="payCOdeList" style="top:11rem;">
-		<ul>
-			<!--
-			<li>
-				<div class="ltbox">
-					<p>支付类型：卡转支付宝</p>
-					<p>收款姓名：一小</p>
-					<p>收款码：<i class="paywayIco"></i></p>
-					<p>收益率：100%</p>
-				</div>
-				<div class="rtbox">
-					!-- 两种状态on-line/off-line --
-					<p>状态：<span class="state on-line">在线</span></p>
-					<p>收款账号：13536920159</p>
-					<p>省市：广东省广州市</p>
-					<p>提成：688</p>
-				</div>
-			</li>
-			-->
-		</ul>
 		<div class="moreBtn" style="text-align:center;">点击加载更多</div>
 	</div>
 	<!-- 底部导航 -->
@@ -90,26 +71,6 @@ select{width:14rem;position: relative;height: 2.2rem;padding: 0 0.5rem;}
 						</select>
 					</div>
 				</div>
-				<div class="Row">
-					<p class="lttxt">所属省份：</p>
-					<div class="selectbox">
-						<select id="province_id">
-							<option value="0">请选择</option>
-							[[foreach from=$province_arr item=vo]]
-							<option value="[[$vo.id]]">[[$vo.cname]]</option>
-							[[/foreach]]
-						</select>
-					</div>
-				</div>
-				<div class="Row" style="margin-bottom:0.1rem;">
-					<p class="lttxt">所属城市：</p>
-					<div class="selectbox">
-						<select id="city_id">
-							<option value="0">请选择</option>
-						</select>
-					</div>
-				</div>
-				<div style="padding:0 1.8rem 0.5rem;padding-right:2.8rem;color:#f60;font-size:0.5rem;text-align:right;">系统会派发同城订单，避免封号</div>
 				<div class="Row bankBox">
 					<p class="lttxt">开户行：</p>
 					<div class="selectbox">
@@ -327,31 +288,6 @@ $(function(){
 		obj.addClass('on');
 	});
 	
-	//切换省份
-	$('#province_id').on('change',function(){
-		var obj=$(this);
-		var province_id=obj.val();
-		iniCity(province_id,0);
-	});
-	
-	function iniCity(province_id,city_id,callback){
-		ajax({
-			url:global.appurl+'c=Skma&a=getCity',
-			data:{pid:province_id},
-			success:function(json){
-				var html='<option value="0">请选择</option>';
-				for(var i in json.data){
-					var item=json.data[i];
-					html+='<option value="'+item.id+'">'+item.cname+'</option>';
-				}
-				$('#city_id').html(html).val(city_id);
-				if(callback){
-					callback();
-				}
-			}
-		});
-	}
-	
 	//添加码
 	$('.addIdNum').on('click',function(){
 		var mtype_id='[[$s.mtype]]';
@@ -360,9 +296,7 @@ $(function(){
 		}
 		$('#mtype_id').val(mtype_id).prop('disabled',false);
 		iniSetInput(mtype_id);
-		
-		$('#province_id').val(0);
-		$('#city_id').html('<option value="0">请选择</option>');
+
 		$('#bank_id').val($('#bank_id').find('option').eq(0).attr('value'));
 		$('#branch_name').val('');
 		$('#ma_realname').val('');
@@ -412,8 +346,6 @@ $(function(){
 					$('#ma_zfbuid').val(item.ma_zfbuid);
 				}
 				
-				$('#province_id').val(item.province_id);
-				iniCity(item.province_id,item.city_id);
 				$('#branch_name').val(item.branch_name);
 				$('#ma_realname').val(item.ma_realname);
 				$('#ma_account').val(item.ma_account);
@@ -434,8 +366,6 @@ $(function(){
 		var obj=$(this);
 		var item_id=$('#item_id').val();;
 		var mtype_id=$('#mtype_id').val();
-		var province_id=$('#province_id').val();
-		var city_id=$('#city_id').val();
 		var bank_id=$('#bank_id').val();
 		var branch_name=$('#branch_name').val();
 		var ma_realname=$('#ma_realname').val();
@@ -463,7 +393,7 @@ $(function(){
 		ajax({
 			url:global.appurl+'c=Skma&a=skma_update',
 			data:{
-				item_id:item_id,mtype_id:mtype_id,province_id:province_id,city_id:city_id,bank_id:bank_id,branch_name:branch_name,
+				item_id:item_id,mtype_id:mtype_id,bank_id:bank_id,branch_name:branch_name,
 				ma_realname:ma_realname,ma_account:ma_account,ma_qrcode:ma_qrcode,status:status,
 				min_money:min_money,max_money:max_money,match_num:match_num,
 				ma_zkmoney:ma_zkmoney,ma_zkling:ma_zkling,ma_zfbuid:ma_zfbuid
@@ -584,7 +514,6 @@ $(function(){
 				}
 				html+='<p class="statusItem">状态：<span class="state '+class_flag+'">'+item.status_flag+'</span></p>';
 				html+='<p class="maaccountItem">收款号：'+item.ma_account+'</p>';
-				html+='<p>省市：'+item.province_name+'/'+item.city_name+'</p>';
 				html+='<p>最大收款：'+item.max_money+'</p>';
 				html+='<p>提成：'+item.yong_money+'</p>';
 				html+='<p>成功率：'+item.day_percent+'</p>';

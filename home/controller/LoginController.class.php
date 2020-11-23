@@ -152,49 +152,6 @@ class LoginController extends BaseController{
 		jReturn('1','登录成功',$return_data);
 	}
 
-	//微信授权
-	public function _wechat(){
-		$state=$this->params['state'];
-		$code=$this->params['code'];
-		if(!$code){
-			exit('oauth error.');
-		}
-		$wx_user=getWxUser($code,'userinfo');
-		if(!$wx_user['openid']){
-			exit('oauth fail.');
-		}
-		$headimgurl=$this->downloadHead(array('openid'=>$wx_user['openid'],'headimgurl'=>$wx_user['headimgurl']));
-		if(!$headimgurl){
-			$headimgurl=$wx_user['headimgurl'];
-		}
-		$data=array(
-			'openid'=>$wx_user['openid'],
-			'unionid'=>$wx_user['unionid'],
-			'nickname'=>$wx_user['nickname'],
-			'sex'=>$wx_user['sex'],
-			'country'=>$wx_user['country'],
-			'province'=>$wx_user['province'],
-			'city'=>$wx_user['city'],
-			'subscribe'=>$wx_user['subscribe'],
-			'subscribe_time'=>$wx_user['subscribe_time'],
-			'subscribe_scene'=>$wx_user['subscribe_scene'],
-			'headimgurl'=>$headimgurl,
-			'update_time'=>NOW_TIME
-		);
-		$db_wx_user=$this->mysql->fetchRow("select * from sys_user_wechat where openid='{$wx_user['openid']}'");
-		if($db_wx_user){
-			$res=$this->mysql->update($data,"id={$db_wx_user['id']}",'sys_user_wechat');
-			$db_wx_user=array_merge($db_wx_user,$data);//合并最新数据
-		}else{
-			$res=$this->mysql->insert($data,'sys_user_wechat');
-		}
-		if($res===false){
-			exit('update userinfo fail');
-		}
-		$_SESSION['user']=$data;
-		header("Location:".APP_URL.'?c=Login');//授权结束之后只跳转回登录首页
-	}
-
 	//下载头像
 	protected function downloadHead($user){
 		$file_path=ROOT_PATH.'uploads/head/'.$user['openid'].'.jpg';

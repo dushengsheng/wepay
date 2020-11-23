@@ -294,21 +294,6 @@ class PayController extends BaseController{
 
 		$sk_ma=[];
 		//根据ip匹配一个合适的
-		/*
-		if(false&&$p_data['client_ip']&&$p_data['client_ip']!='127.0.0.1'){
-			$ip_url="http://ip-api.com/json/{$p_data['client_ip']}?lang=zh-CN";
-			$result=curl_get($ip_url,5);
-			$resultArr=json_decode($result['output'],true);
-			$regionName=$resultArr['regionName'];
-			$cityName=$resultArr['city'];
-			if($regionName&&$city){
-				$city=$mysql->fetchRow("select * from cnf_pc where cname like '%{$cityName}%'");
-				if($city){
-					$ma_sql=$sql." and log.province_id={$city['pid']} and log.city_id={$city['id']} order by rand()";
-					$sk_ma=$mysql->fetchRow($ma_sql);
-				}
-			}
-		}*/
 		if(!$sk_ma){
 			//$ma_sql=$sql." order by rand()";
 			$ma_sql=$sql." order by u.queue_time asc,log.queue_time asc";

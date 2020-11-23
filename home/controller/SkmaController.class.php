@@ -6,13 +6,6 @@ class SkmaController extends BaseController{
         parent::__construct();
     }
 
-	public function _getCity(){
-		checkLogin();
-		$pid=intval($this->params['pid']);
-		$city_arr=$this->mysql->fetchRows("select * from cnf_pc where pid={$pid} and pid>0");
-		jReturn('1','ok',$city_arr);
-	}
-
     public function _index(){
         $pageuser=checkLogin();
 		$user=$this->mysql->fetchRow("select * from sys_user where id={$pageuser['id']}");
@@ -38,11 +31,9 @@ class SkmaController extends BaseController{
 		
 		$this->params['mtype']=intval($this->params['mtype']);
 		$bank_arr=$this->mysql->fetchRows("select * from cnf_bank");
-		$province_arr=$this->mysql->fetchRows("select * from cnf_pc where pid=0");
         $data=[
 			'user'=>$user,
             'mtype_arr'=>$mtype_arr,
-			'province_arr'=>$province_arr,
 			'bank_arr'=>$bank_arr,
 			's'=>$this->params
         ];
@@ -93,12 +84,10 @@ class SkmaController extends BaseController{
 		$pageuser=checkLogin();
 		$item_id=intval($this->params['item_id']);
 		$sql="select log.id,log.uid,log.mtype_id,log.min_money,log.max_money,
-		log.province_id,log.city_id,log.bank_id,log.branch_name,
+		log.bank_id,log.branch_name,
 		log.status,log.create_time,log.ma_account,log.ma_realname,log.ma_qrcode,log.ma_zkmoney,log.ma_zkling,log.ma_zfbuid,
-		mt.name as mtpye_name,mt.type as mtype_type,bk.bank_name,pc.cname as province_name,pc2.cname as city_name 
+		mt.name as mtpye_name,mt.type as mtype_type,bk.bank_name 
 		from sk_ma log left join sk_mtype mt on log.mtype_id=mt.id 
-		left join cnf_pc pc on log.province_id=pc.id 
-		left join cnf_pc pc2 on log.city_id=pc2.id 
 		left join cnf_bank bk on log.bank_id=bk.id where log.id={$item_id} and log.uid={$pageuser['id']} and log.status<99";
 		$item=$this->mysql->fetchRow($sql);
 		if(!$item){
@@ -124,11 +113,9 @@ class SkmaController extends BaseController{
 			$where.=" and (log.ma_account='{$params['keyword']}' or log.ma_realname='{$params['keyword']}')";
 		}
 		$count_item=$this->mysql->fetchRow("select count(1) as cnt from sk_ma log left join sk_mtype mt on log.mtype_id=mt.id {$where}");
-		$sql="select log.id,log.uid,log.mtype_id,log.min_money,log.max_money,log.province_id,log.city_id,log.bank_id,log.branch_name,log.status,log.create_time,log.ma_account,log.ma_realname,log.ma_qrcode,
-		mt.name as mtpye_name,mt.type as mtype_type,bk.bank_name,pc.cname as province_name,pc2.cname as city_name 
+		$sql="select log.id,log.uid,log.mtype_id,log.min_money,log.max_money,log.bank_id,log.branch_name,log.status,log.create_time,log.ma_account,log.ma_realname,log.ma_qrcode,
+		mt.name as mtpye_name,mt.type as mtype_type,bk.bank_name 
 		from sk_ma log left join sk_mtype mt on log.mtype_id=mt.id 
-		left join cnf_pc pc on log.province_id=pc.id 
-		left join cnf_pc pc2 on log.city_id=pc2.id 
 		left join cnf_bank bk on log.bank_id=bk.id {$where} order by log.id desc";
 		$list=$this->mysql->fetchRows($sql,$params['page'],$pageSize);
 		//echo $sql;exit;		
@@ -152,8 +139,6 @@ class SkmaController extends BaseController{
 		$item_id=intval($params['item_id']);
 		$params['mtype_id']=intval($params['mtype_id']);
 		$params['bank_id']=intval($params['bank_id']);
-		$params['province_id']=intval($params['province_id']);
-		$params['city_id']=intval($params['city_id']);
 		$params['status']=intval($params['status']);
 		$params['max_money']=floatval($params['max_money']);
 		$params['min_money']=floatval($params['min_money']);
@@ -166,10 +151,6 @@ class SkmaController extends BaseController{
 			}elseif(!$mtype['is_open']){
 				jReturn('-1','该支付类型暂未开放');
 			}
-		}
-		
-		if(!$params['province_id']||!$params['city_id']){
-			jReturn('-1','请选择所在省份和城市');
 		}
 		
 		if(!$params['ma_realname']){
@@ -221,8 +202,6 @@ class SkmaController extends BaseController{
 		}
 		$sk_ma=array(
 			'mtype_id'=>$params['mtype_id'],
-			'province_id'=>$params['province_id'],
-			'city_id'=>$params['city_id'],
 			'ma_account'=>$params['ma_account'],
 			'ma_realname'=>$params['ma_realname'],
 			'status'=>$params['status'],

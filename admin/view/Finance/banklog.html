@@ -54,25 +54,6 @@ position:relative;}
 <script type="text/html" id="layerTpl">
 	<form class="layui-form LayerForm" onsubmit="return false;">
 		<div class="layui-form-item">
-			<label class="layui-form-label">银行省市：</label>
-			<div class="layui-inline" style="width:140px;margin-right:20px;">
-				<select id="province_id" lay-filter="province_id">
-					<option value="0">请选择省份</option>
-					[[foreach from=$province_arr item=vo]]
-					<option value="[[$vo.id]]">[[$vo.cname]]</option>
-					[[/foreach]]
-				</select>
-			</div>
-			<div class="layui-inline" style="width:160px;">
-				<select id="city_id" lay-filter="city_id" lay-search>
-					<option value="0">请选择城市</option>
-					[[foreach from=$city_arr item=vo]]
-					<option value="[[$vo.id]]">[[$vo.cname]]</option>
-					[[/foreach]]
-				</select>
-			</div>
-		</div>
-		<div class="layui-form-item">
 			<label class="layui-form-label" style="font-size:13px;">开户行：</label>
 			<div class="layui-input-block">
 				<select id="bank_id">
@@ -123,8 +104,6 @@ $('#searchBtn').on('click',function(){
             {field:'bank_name', title: '开户行'},
             {field:'bank_account',width:200, title: '银行卡号'},
             {field:'bank_realname', title: '收款姓名'},
-			{field:'province_name', title: '省份'},
-			{field:'city_name', title: '城市'},
             {field:'create_time', title: '创建时间'},
             {field:'', width:120, title: '操作',toolbar:'#barItemAct'}
         ]],
@@ -191,9 +170,6 @@ function updateView(obj){
         success:function(){
 
             if(obj&&obj.data){
-                //$('input[name="status"][value="'+item.status+'"]').attr('checked',true);
-				provinceChange(item.province_id,item.city_id);
-				$('#province_id').val(item.province_id);
 				$('#bank_id').val(item.bank_id);
             }
             layui.form.render();
@@ -206,47 +182,6 @@ $('.addBtn').on('click',function(){
     updateView(null);
 });
 
-//切换城市
-provinceChange(0,0);
-layui.form.on('select(province_id)', function(data){
-	var pid=data.value;
-	provinceChange(pid,0);
-});
-
-function provinceChange(pid,cid){
-	var pObj=$('#province_id');
-	//var province_id=pObj.val();
-	var html='<option value="0">请选择城市</option>';
-	if(pid<1){
-		$('#city_id').html(html);
-		layui.form.render('select');
-	}else{
-		ajax({
-			url:global.appurl+'c=Pay&a=getCity',
-			data:{pid:pid},
-			beforeSend:function(){
-				$('#city_id').html(html);
-				layui.form.render('select');
-			},
-			success:function(json){
-				if(!json.data){
-					return;
-				}
-				for(var i in json.data){
-					var item=json.data[i];
-					var selected='';
-					if(cid==item.id){
-						selected='selected';
-					}
-					html+='<option value="'+item.id+'" '+selected+'>'+item.cname+'</option>';
-				}
-				$('#city_id').html(html);
-				layui.form.render('select');
-			}
-		});
-	}
-}
-
 ///////////////////////////////////////
 
 
@@ -255,8 +190,6 @@ function saveBtn(ts){
 	var obj=$(ts);
 	var item_id=$('#item_id').val();
 	var i_index=$('#item_id').attr('i-index');
-	var province_id=$.trim($('#province_id').val());
-	var city_id=$.trim($('#city_id').val());
 	var bank_id=$.trim($('#bank_id').val());
 	var bank_account=$.trim($('#bank_account').val());
 	var bank_realname=$.trim($('#bank_realname').val());
@@ -272,7 +205,7 @@ function saveBtn(ts){
 	}
 	ajax({
 		url:global.appurl+'c=Finance&a=banklog_update',
-		data:{item_id:item_id,province_id:province_id,city_id:city_id,bank_id:bank_id,bank_account:bank_account,bank_realname:bank_realname},
+		data:{item_id:item_id,bank_id:bank_id,bank_account:bank_account,bank_realname:bank_realname},
 		success:function(json){
 			_alert(json.msg);
 			obj.attr('has-click','0');
@@ -290,10 +223,6 @@ function saveBtn(ts){
                     bank_name:$('#bank_id').find('option[value="'+bank_id+'"]').text(),
                     bank_account:bank_account,
                     bank_realname:bank_realname,
-                    province_id:province_id,
-                    province_name:$('#province_id').find('option[value="'+province_id+'"]').text(),
-                    city_id:city_id,
-                    city_name:$('#city_id').find('option[value="'+city_id+'"]').text()
                     //max_tmoney:max_tmoney,
                     //sort:sort,
                     //cover:cover,

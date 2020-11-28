@@ -1,0 +1,6 @@
+array (
+  0 => 'delete from sk_ma where status=99 and create_time between 1567267201 and 1605940904',
+  'act_uid' => '1',
+  'act_time' => 1605940921,
+)
+

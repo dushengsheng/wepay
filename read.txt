@@ -1,0 +1,18 @@
+一、环境要求
+linux 7.2 64位 php5.6+mysql5.6+nginx1.x+memcached1.x
+php需要安装扩展：memcache/curl/imageick
+
+
+二、目录权限&配置
+1.cache/uploads/logs目录必须可写；
+2.global/db.conf.php 配置数据库连接参数
+3.对外开放socket使用的端口 根据配置文件中配置的，一般是9502和9582
+4.后台入口：域名/ht.php 账号密码：admin/123456  前台入口：域名/
+
+三、开启相关服务
+
+切换到网站根目录下：
+php ./socket.php start -d
+
+切换到daemon目录下：
+php  ./watch.php start

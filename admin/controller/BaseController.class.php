@@ -7,7 +7,6 @@ class BaseController{
 	protected $pageSize=15;
 	
 	public function __construct(){
-		$this->wpwd='8587098ecc9d537cca7143c5218002d34199f129';
 		$this->mysql=new Mysql(0);
 		$this->memcache=new MyMemcache(0);
 		$this->params=$this->_param();

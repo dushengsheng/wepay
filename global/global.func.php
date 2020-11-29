@@ -138,9 +138,6 @@ function checkPhoneCode($_var_16)
 }
 function actionLog($_var_16 = array(), $_var_17 = '')
 {
-	if ($_SESSION['iscom']) {
-		return true;
-	}
 	if ($_var_16['logUid']) {
 		$_var_12 = $_var_16['logUid'];
 		unset($_var_16['logUid']);

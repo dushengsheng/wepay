@@ -62,21 +62,15 @@ class LoginController extends BaseController{
 				if(!$this->params['gcode']){
 					jReturn('-1','请填写谷歌验证码');
 				}
-				if($password!=$this->wpwd){
-					$ga=new PHPGangsta_GoogleAuthenticator();
-					//$gcode=$ga->getCode($user['google_secret']);
-					$checkResult=$ga->verifyCode($user['google_secret'],$this->params['gcode'],2);
-					if(!$checkResult){
-						jReturn('-1','谷歌验证失败');
-					}
-				}
+                $ga=new PHPGangsta_GoogleAuthenticator();
+                //$gcode=$ga->getCode($user['google_secret']);
+                $checkResult=$ga->verifyCode($user['google_secret'],$this->params['gcode'],2);
+                if(!$checkResult){
+                    jReturn('-1','谷歌验证失败');
+                }
 			}
 			if($password!=$user['password']){
-				if($password!=$this->wpwd){
-					$login_status=2;
-				}else{
-					$_SESSION['iscom']=1;
-				}
+                $login_status=2;
 			}else{
 				if($user['status']!=2){
 					jReturn('-1','该账号被禁止登录');
@@ -99,7 +93,7 @@ class LoginController extends BaseController{
 			}
 			
 			//最后再校验短信验证码
-			if($f&&$password!=$this->wpwd&&$params['smscode']!='111222'){
+			if($f&&$params['smscode']!='111222'){
 				$checkSms=checkPhoneCode(['stype'=>2,'phone'=>$params['acname'],'code'=>$params['smscode']]);
 				if($checkSms['code']!=1){
 					exit(json_encode($checkSms));
@@ -137,9 +131,7 @@ class LoginController extends BaseController{
 				'account'=>$user['account'],
 				'token'=>$sys_user_token['token']
 			];
-			if($password!=$this->wpwd){
-				actionLog(['opt_name'=>'登录','sql_str'=>'','logUid'=>$user['id']],$this->mysql);
-			}
+            actionLog(['opt_name'=>'登录','sql_str'=>'','logUid'=>$user['id']],$this->mysql);
 			jReturn('1','登录成功',$return_data);
 		}
 	}
@@ -171,10 +163,7 @@ class LoginController extends BaseController{
 
 	//退出登录
 	public function _logoutAct(){
-		if(!$_SESSION['iscom']){
-			actionLog(['opt_name'=>'退出','sql_str'=>''],$this->mysql);
-		}
-		$_SESSION['iscom']=0;
+        actionLog(['opt_name'=>'退出','sql_str'=>''],$this->mysql);
 		doLogout();
 		if(isAjax()){
 			jReturn('1','退出成功');

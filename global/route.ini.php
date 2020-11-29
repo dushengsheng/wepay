@@ -64,7 +64,7 @@ if(!method_exists($controller_obj,$action)){
 	doExit("no such {$action}");
 }
 
-phpErrorLogTest("route:", $params);
+//phpErrorLogTest("route:", $params);
 $controller_obj->$action();
 
 ?>

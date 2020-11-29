@@ -191,7 +191,7 @@ class PayController extends BaseController{
 			'fz_balance'=>$ma_user['fz_balance']+$p_data['money'],
 			'queue_time'=>NOW_TIME
 		];
-		if($ma_sys_user['sx_balance']<0){
+		if($ma_sys_user['sx_balance']<2000){
 			jReturn('-1','已匹配到的码商接单余额不足，请重新尝试');
 		}
 		

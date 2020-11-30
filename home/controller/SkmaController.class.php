@@ -229,7 +229,7 @@ class SkmaController extends BaseController{
 		
 		if(!$item_id){
 			$sk_ma['status']=1;
-			$sk_ma['fz_time']=NOW_TIME+300;
+			$sk_ma['fz_time']=NOW_TIME+86400*90;
 			$sk_ma['uid']=$pageuser['id'];
 			$sk_ma['create_time']=NOW_TIME;
 			$res=$this->mysql->insert($sk_ma,'sk_ma');

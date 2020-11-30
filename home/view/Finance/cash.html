@@ -12,8 +12,8 @@
 		[[if 'cnf_xyhk_model'|getConfig eq '是']]
 		<p class="txtline">可提余额：￥[[$user.balance]]</p>
 		[[else]]
-		<p class="txtline">可提余额：￥[[$user.balance]] <a href="javascript:;" class="editBtn transToBalance" style="width:6rem;" data-type="1">可提⇄接单</a></p>
-		<p class="txtline">接单余额：￥[[$user.sx_balance]] <a href="javascript:;" class="editBtn transToBalance" style="width:6rem;" data-type="2">接单⇄可提</a></p>
+		<p class="txtline">可提余额：￥[[$user.balance]] <a href="javascript:;" class="editBtn transToBalance" style="width:6rem;" data-type="1">可提->接单</a></p>
+		<p class="txtline">接单余额：￥[[$user.sx_balance]] <a href="javascript:;" class="editBtn transToBalance" style="width:6rem;" data-type="2">接单->可提</a></p>
 		<p class="txtline">接单冻结：￥[[$user.fz_balance]]</p>
 		[[/if]]
 		<p class="txtline">收款账号：[[$banklog.bank_name]]，[[$banklog.bank_realname]]，[[$banklog.bank_account]]<a href="/?c=User&a=bcard" class="editBtn">修改</a></p>

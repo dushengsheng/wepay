@@ -699,7 +699,7 @@ class FinanceController extends BaseController{
 		}else{
 			$cash_time_str="提现时间：周一至周日 {$day_time_arr[0]} - {$day_time_arr[1]}";
 		}
-		$djs_item=$this->mysql->fetchRow("select count(1) as cnt,sum(real_money) as money from pay_order where suid={$user['id']} and pay_status=9 and js_status=1");
+		$djs_item=$this->mysql->fetchRow("select count(1) as cnt,sum(real_money) as money from sk_order where suid={$user['id']} and pay_status=9 and js_status=1");
 		$cash_shcharge_money=getConfig('cash_shcharge_money');
 		$fee_str="提现金额 × {$cash_shcharge_money[1]} + {$cash_shcharge_money[2]}";
 		$data=[

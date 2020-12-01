@@ -136,7 +136,7 @@ $io->on('connection', function($socket)use($io){
     //p($socket->request);
     $socket->session=[];
 
-	$socket->on('sendFromClient',function($msg)use($io,$socket){
+	$socket->on('msgFromClient',function($msg)use($io,$socket){
 		$json_arr=json_decode($msg,true);
 		if(!$json_arr){
             $socket->disconnect();

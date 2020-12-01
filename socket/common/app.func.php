@@ -4,8 +4,8 @@ function send($act, $data='',$obj){
 	if(!$obj){
 		return false;
 	}
-	$json=json_encode(['emit'=>'sendFromServer','act'=>$act,'data'=>$data]);
-	$obj->emit('sendFromServer',$json);
+	$json=json_encode(['emit'=>'msgFromServer','act'=>$act,'data'=>$data]);
+	$obj->emit('msgFromServer',$json);
 }
 
 function jsonReturn($code,$msg,$data=[]){

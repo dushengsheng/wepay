@@ -106,7 +106,7 @@ var app={
 		if(!this.ws){
 			return;
 		}
-		var json={emit:'sendFromClient',act:act,data:data};
+		var json={emit:'msgFromClient',act:act,data:data};
 		if(this.debug){
 			console.log(json);
 		}
@@ -114,9 +114,9 @@ var app={
 		/*
 		//phpsocket.io不支持二进制
 		strToBuffer(JSON.stringify(json),function(buffer){
-			_this.ws.emit('sendFromClient',buffer);
+			_this.ws.emit('msgFromClient',buffer);
 		});*/
-		_this.ws.emit('sendFromClient',JSON.stringify(json));
+		_this.ws.emit('msgFromClient',JSON.stringify(json));
 	},
 	login:function(){
 		var LoginModule=new this.module.Login();
@@ -130,7 +130,7 @@ var app={
 
 			_this.login();//发送登录
 
-			_this.ws.on('sendFromServer',function(buffer){
+			_this.ws.on('msgFromServer',function(buffer){
 				var json={act:'',data:{}};
 				try{
 					json=JSON.parse(buffer);

@@ -231,7 +231,7 @@ class WebServer extends Worker
 			if(isset($workerman_siteConfig['custom404']) && file_exists($workerman_siteConfig['custom404'])){
 				$html404 = file_get_contents($workerman_siteConfig['custom404']);
 			}else{
-				$html404 = '<html><head><title>404 File not found -abnma.com 搬码资源网</title></head><body><center><h3>404 Not Found</h3></center></body></html>';
+				$html404 = '<html><head><title>404 File not found -日月支付</title></head><body><center><h3>404 Not Found</h3></center></body></html>';
 			}
             $connection->close($html404);
             return;

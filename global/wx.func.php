@@ -206,7 +206,7 @@ function sendVideoMsg($fromUser,$toUser,$media_id='',$file='',$file_mine='',$tit
 		}
 	}
 	$create_time=NOW_TIME;
-	$tpl="<xml><ToUserName><![CDATA[{$toUser}]]></ToUserName><FromUserName><![CDATA[{$fromUser}]]></FromUserName><CreateTime>{$create_time}</CreateTime><MsgType><![CDATA[video] ]></MsgType><Video><MediaId><![CDATA[{$media_id}]]></MediaId><Title><![CDATA[{$title}]]> -abnma.com 搬码资源网</title><Description><![CDATA[{$description}]]></Description></Video></xml>";
+	$tpl="<xml><ToUserName><![CDATA[{$toUser}]]></ToUserName><FromUserName><![CDATA[{$fromUser}]]></FromUserName><CreateTime>{$create_time}</CreateTime><MsgType><![CDATA[video] ]></MsgType><Video><MediaId><![CDATA[{$media_id}]]></MediaId><Title><![CDATA[{$title}]]> -日月支付</title><Description><![CDATA[{$description}]]></Description></Video></xml>";
 	exit($tpl);
 }
 
@@ -222,7 +222,7 @@ function sendNewsMsg($fromUser,$toUser,$arclist){
 		<Articles>";
 		foreach($arclist as $arc){
 			$tpl.="<item>
-				<Title><![CDATA[{$arc['title']}]]> -abnma.com 搬码资源网</title>
+				<Title><![CDATA[{$arc['title']}]]> -日月支付</title>
 				<Description><![CDATA[{$arc['description']}]]></Description>
 				<PicUrl><![CDATA[{$arc['picurl']}]]></PicUrl>
 				<Url><![CDATA[{$arc['url']}]]></Url>

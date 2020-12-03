@@ -583,6 +583,33 @@ class PayController extends BaseController{
 	
 	///////////////////////////测试相关//////////////////////////
 	public function _test(){
+
+	    /*
+	    $public_rsa_key = getConfig('rsa_pt_public');
+	    $private_rsa_key = getConfig('rsa_pt_private');
+
+	    $p_data=[
+            'pt_order'=>'inner_order_11111',
+            'sh_order'=>'outer_order_22222',
+            'status'=>'success',
+            'money'=>'money_333333',
+            'time'=>'time_tttttt'
+        ];
+
+        phpErrorLogTest("test_rsa_decrypt: public_rsa_key", $public_rsa_key);
+
+        $json_str = json_encode($p_data,256);
+        phpErrorLogTest("test_rsa_decrypt: json_str", $json_str);
+        $bs64_str = base64_encode($json_str);
+
+	    $encrypt_arr = encryptRsa($bs64_str, $public_rsa_key);
+	    $encrypt_str = $encrypt_arr['data'];
+        phpErrorLogTest("test_rsa_decrypt: encrypt_str", $encrypt_str);
+
+	    $decrypt_arr = decryptRsa($encrypt_str, $private_rsa_key);
+        phpErrorLogTest("test_rsa_decrypt: decrypt_arr[data]", $decrypt_arr['data']);
+	    */
+
 		$sys_version=getConfig('sys_version');
 		if($this->params['v']!=$sys_version){
 			exit('测试入口不正确，请咨询客服人员');

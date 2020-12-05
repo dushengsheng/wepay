@@ -120,6 +120,7 @@ class OrderController extends BaseController{
 		
 		$pageuser=checkLogin();
 		$order_sn=$this->params['osn'];
+		$order_money = $this->params['money'];
 		$sql="select * from sk_order where order_sn='{$order_sn}' and pay_status<99";
 		$order=$this->mysql->fetchRow($sql);
 		if(!$order){
@@ -131,10 +132,15 @@ class OrderController extends BaseController{
 		if($order['pay_status']==9){
 			jReturn('-1','该订单已确认，请不要重复确认');
 		}
+		if ($order['money'] != $order_money) {
+            jReturn('-1','订单金额不正确');
+        }
 		$this->mysql->startTrans();
 		$user=$this->mysql->fetchRow("select * from sys_user where id={$pageuser['id']} for update");
 		$cnf_mscheck_needpwd=getConfig('cnf_mscheck_needpwd');
-		if($cnf_mscheck_needpwd=='是'){
+		//超时补单需要2级密码
+        //if($cnf_mscheck_needpwd=='是')
+		if($order['pay_status']==3){
 			$password2=getPassword($this->params['password2']);
 			if($password2!=$user['password2']){
 				jReturn('-1','二级密码不正确');

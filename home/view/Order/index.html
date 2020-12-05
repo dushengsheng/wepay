@@ -201,9 +201,9 @@ function iniOrder(item){
 		html+='<div class="paystatebox">';
 			html+='<p class="amount">￥'+item.money+'</p>';
 			if(item.pay_status==1||item.pay_status==2){
-				html+='<a href="javascript:;"  class="payConfirmBtn">确认收款</a>';
+				html+='<a href="javascript:;" class="payConfirmBtn" id="payConfirmBtnConfirm">确认收款</a>';
 			}else if(item.pay_status==3){
-				html+='<a href="javascript:;"  class="payConfirmBtn">超时补单</a>';
+				html+='<a href="javascript:;" class="payConfirmBtn" id="payConfirmBtnOvertime">超时补单</a>';
 			}else if(item.pay_status==9){
 
 				if(item.js_status==2){
@@ -294,33 +294,32 @@ $(function(){
 	/////////////////////////////////////////////
 	var cnf_mscheck_needpwd='[["cnf_mscheck_needpwd"|getConfig]]';
 	
-	$('body').on('click','.payConfirmBtn',function(){
+	$('body').on('click','#payConfirmBtnConfirm',function(){
 		var obj=$(this);
 		var liObj=obj.parents('li');
 		var osn=liObj.attr('data-osn');
 		var item=nowlist[osn];
 		var con='确定已收到<b style="color:#fc744d;font-size:20px;">￥'+item.money+'</b>';
-		if(cnf_mscheck_needpwd=='是'){
-			con+='<div style="font-weight:bold;">请输入二级密码：<br><input type="password" id="password2" style="display:inline-block;line-height:26px;padding:2px 5px;border:1px solid #dedede;;border-radius:3px;" /></div>';
-		}
+		con+='<div style="font-weight:bold;">请输入订单金额：<br><input type="number" id="confirm_money" style="display:inline-block;line-height:26px;padding:2px 5px;border:1px solid #dedede;;border-radius:3px;" /></div>';
 		layer.open({
 			content:con,
 			style:'width:65%',
 			btn:['确定','取消'],
 			yes:function(idx){
-				var password2='';
-				if(cnf_mscheck_needpwd=='是'){
-					password2=$.trim($('#password2').val());
-					if(!password2){
-						_alert('请输入二级密码');
-						return false;
-					}
-					password2=md5(password2);
+				var money = $.trim($('#confirm_money').val());
+				var password2 = '';
+				if(!money){
+					_alert('请输入金额');
+					return false;
+				}
+				if(money != item.money) {
+					_alert('金额不正确');
+					return false;
 				}
 				layer.close(idx);
 				ajax({
 					url:global.appurl+'c=Order&a=order_check',
-					data:{osn:osn,password2:password2},
+					data:{osn:osn,password2:password2,money:money},
 					beforeSend:function(){
 						layer.open({type:2});
 					},
@@ -338,8 +337,8 @@ $(function(){
 									liObj.find('.orderId').css({color:'#333333'});
 									liObj.find('.paystate').css({backgroundImage:'url(/public/home/images/pstatus'+json.data.pay_status+'.png)'}).text(json.data.pay_status_flag);
 									liObj.find('.payTime').text(json.data.pay_time);
-									liObj.find('.payConfirmBtn').fadeOut(function(){
-										liObj.find('.payConfirmBtn').after('<a href="javascript:;"  class="payHkFlag">待结算</a>');
+									liObj.find('#payConfirmBtnConfirm').fadeOut(function(){
+										liObj.find('#payConfirmBtnConfirm').after('<a href="javascript:;"  class="payHkFlag">待结算</a>');
 									});
 								}
 							});
@@ -349,7 +348,67 @@ $(function(){
 			}
 		});
 	});
-	
+
+	$('body').on('click','#payConfirmBtnOvertime',function(){
+		var obj=$(this);
+		var liObj=obj.parents('li');
+		var osn=liObj.attr('data-osn');
+		var item=nowlist[osn];
+		var con='确定已收到<b style="color:#fc744d;font-size:20px;">￥'+item.money+'</b>';
+		con+='<div style="font-weight:bold;">请输入订单金额：<br><input type="number" id="overtime_money" style="display:inline-block;line-height:26px;padding:2px 5px;border:1px solid #dedede;;border-radius:3px;" /></div>';
+		con+='<br><div style="font-weight:bold;">请输入二级密码：<br><input type="password" id="password2" style="display:inline-block;line-height:26px;padding:2px 5px;border:1px solid #dedede;;border-radius:3px;" /></div>';
+		layer.open({
+			content:con,
+			style:'width:65%',
+			btn:['确定','取消'],
+			yes:function(idx){
+				var money = $.trim($('#overtime_money').val());
+				var password2=$.trim($('#password2').val());
+				if(!money){
+					_alert('请输入金额');
+					return false;
+				}
+				if(money != item.money) {
+					_alert('金额不正确');
+					return false;
+				}
+				if(!password2){
+					_alert('请输入二级密码');
+					return false;
+				}
+				password2=md5(password2);
+				layer.close(idx);
+				ajax({
+					url:global.appurl+'c=Order&a=order_check',
+					data:{osn:osn,password2:password2,money:money},
+					beforeSend:function(){
+						layer.open({type:2});
+					},
+					success:function(json){
+						layer.close(idx);
+						setTimeout(function(){
+							layer.closeAll();
+							if(json.code!=1){
+								_alert(json.msg);
+								return;
+							}
+							_alert({
+								content:json.msg,
+								end:function(){
+									liObj.find('.orderId').css({color:'#333333'});
+									liObj.find('.paystate').css({backgroundImage:'url(/public/home/images/pstatus'+json.data.pay_status+'.png)'}).text(json.data.pay_status_flag);
+									liObj.find('.payTime').text(json.data.pay_time);
+									liObj.find('#payConfirmBtnOvertime').fadeOut(function(){
+										liObj.find('#payConfirmBtnOvertime').after('<a href="javascript:;"  class="payHkFlag">待结算</a>');
+									});
+								}
+							});
+						},1200);
+					}
+				});
+			}
+		});
+	});
 	///////////////////////////////////////////////////
 	
 	document.getElementById('hkCover').addEventListener('change', function () {

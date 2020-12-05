@@ -1,6 +1,6 @@
 <?php
 //####################DB配置开始###########################
-$pwd='woaini520DSS@wepay';
+$pwd='mysql_520DSS@wepay';
 if(IS_WIN){
 	$pwd='lESIHVND';
 }

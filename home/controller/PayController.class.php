@@ -6,7 +6,7 @@ class PayController extends BaseController{
 		parent::__construct();
 		$this->getMaNum=0;
 		$this->checkMaArr=[];
-		$this->testMchId='13122222222';//测试通道使用的商户号
+		$this->testMchId='BOSS';//测试通道使用的商户号
 	}
 	
 	//md5签名

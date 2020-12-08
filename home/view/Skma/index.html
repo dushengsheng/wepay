@@ -91,7 +91,7 @@ select{width:14rem;position: relative;height: 2.2rem;padding: 0 0.5rem;}
 					<p class="lttxt">收款姓名：</p>
 					<div class="inputbox"><input type="text" id="ma_realname" placeholder="真实姓名"></div>
 				</div>
-				<div class="Row">
+				<div class="Row accountBox">
 					<p class="lttxt">收款账号：</p>
 					<div class="inputbox"><input type="text" id="ma_account" placeholder="支付宝/微信/手机号/卡号"></div>
 				</div>
@@ -228,12 +228,20 @@ $(function(){
 	/////////////////////////////////////////////
 	//全部隐藏
 	function showNone(){
-		$('.bankBox,.codeImgBox,.maxBox,.moneyBox,.uidBox').hide();
+		$('.bankBox,.codeImgBox,.moneyBox,.uidBox').hide();
+		$('.maxBox p').text('最大收款：');
+		$('.accountBox').show();
 	}
 	
 	//只显示账号
 	function showAccount(){
 		showNone();
+	}
+
+	//咸鱼不显示收款账号
+	function hideAccount(){
+		$('.accountBox').hide();
+		$('.maxBox p').text('代支付金额：');
 	}
 	
 	//显示银行信息
@@ -261,13 +269,13 @@ $(function(){
 		}else if(mtype_type==3){
 			showBank();
 		}else if(mtype_type==4){
-			//...
+			$('.moneyBox').show();
 		}else if(mtype_type==5){
 			$('.uidBox').show();
 		}
-		$('.maxBox').show();
-		if(mtype_type==4){
-			$('.moneyBox').show();
+		else if (mtype_type==6){
+			showCode();
+			hideAccount();
 		}else{
 			//$('.maxBox').show();
 		}
@@ -309,6 +317,7 @@ $(function(){
 		$('#item_id').val(0);
 		$('.bannerItem').find('img').attr('src','/public/home/images/add.png');
 		$('.stateNav span[data-status="2"]').trigger('click');
+		$('.stateNav span[data-status="6"]').trigger('click');
 		$('.addIdCodePop .ConIn .Tt').text('添加收款码');
 		$('.addIdCodePop').fadeIn();
 	});
@@ -337,7 +346,7 @@ $(function(){
 				var item=json.data;
 				$('#mtype_id').val(item.mtype_id).prop('disabled',true);
 				iniSetInput(item.mtype_id);
-				if(item.mtype_type==2){
+				if(item.mtype_type==2 || item.mtype_type==6){
 					$('.bannerItem').find('img').attr('src',item.ma_qrcode);
 				}else if(item.mtype_type==3){
 					$('#bank_id').val(item.bank_id);
@@ -500,7 +509,7 @@ $(function(){
 				html+='<p>收款人：'+item.ma_realname+'</p>';
 				if(item.mtype_type==3){
 					html+='<p>开户行：'+item.bank_name+'</p>';
-				}else if(item.mtype_type==2){
+				}else if(item.mtype_type==2 || item.mtype_type==6){
 					html+='<p class="maQrcodeBox">收款码：<i class="paywayIco" data-ma-qrcode="'+item.ma_qrcode+'" style="background-image:url('+item.ma_qrcode+');position:relative;top:3px;"></i></p>';
 				}
 				html+='<p>最小收款：'+item.min_money+'</p>';
@@ -522,7 +531,7 @@ $(function(){
 				html+='<p style="color:#fc744d;">';
 					html+='<a class="delItem" style="margin-right:10px;">删除</a>';
 					html+='<a class="editItem">修改</a>';
-					if(item.mtype_type<=3){
+					if(item.mtype_type<=3 || item.mtype_type==6){
 						html+='<a class="testItem" style="margin-left:10px;">空单</a>';
 					}
 				html+='</p>';

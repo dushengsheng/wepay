@@ -9,7 +9,7 @@
 		<h1>请选择支付方式</h1>
 		<div class="paywayList">
 			[[foreach from=$mtype_arr item=vo]]
-			<a href="javascript:;" data-id="[[$vo.id]]" class="[[if in_array($vo.id,[1,11,12])]]alipay[[elseif in_array($vo.id,[2,4,5])]]wxpay[[elseif $vo.id eq 3]]bankCardpay[[else]]bankCardpay[[/if]] [[if $vo.id eq 1]]on[[/if]]"><p>[[$vo.name]]</p></a>
+			<a href="javascript:;" data-id="[[$vo.id]]" class="[[if in_array($vo.id,[1,11,12,21])]]alipay[[elseif in_array($vo.id,[2,4,5])]]wxpay[[elseif $vo.id eq 3]]bankCardpay[[else]]bankCardpay[[/if]] [[if $vo.id eq 1]]on[[/if]]"><p>[[$vo.name]]</p></a>
 			[[/foreach]]
 		</div>
 		<a href="javascript:;" class="fillCashBtn">充值</a>

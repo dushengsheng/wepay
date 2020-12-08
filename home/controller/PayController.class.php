@@ -94,8 +94,17 @@ class PayController extends BaseController{
 		if($check_mc_order['id']){
 			jReturn('-1',"商户单号已存在，请勿重复提交 {$p_data['order_sn']}");
 		}
-		
-		$mtype=$mysql->fetchRow("select * from sk_mtype where id={$ptype} and is_open=1");
+
+		//支付宝通道优先使用咸鱼码
+        $mtype = array();
+		if ($ptype == 1)
+        {
+            $mtype=$mysql->fetchRow("select * from sk_mtype where id=21 and is_open=1");
+            if (!$mtype)
+            {
+                $mtype=$mysql->fetchRow("select * from sk_mtype where id=1 and is_open=1");
+            }
+        }
 		if(!$mtype){
 			jReturn('-1','不存在该支付类型或未开放');
 		}else{

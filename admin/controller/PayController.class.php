@@ -255,13 +255,13 @@ class PayController extends BaseController{
 		if(!$params['ma_realname']){
 			jReturn('-1','请填写收款姓名');
 		}
-		if(!$params['ma_account']){
+		if(!$params['ma_account'] && $mtype['type']!=6){
 			jReturn('-1','请填写收款账号');
 		}
 		
 		if($mtype['type']==1){
 			//基本类型无需额外信息
-		}elseif($mtype['type']==2){
+		}elseif($mtype['type']==2 || $mtype['type']==6){
 			if(!$params['ma_qrcode']){
 				jReturn('-1','请上传收款码');
 			}
@@ -306,7 +306,7 @@ class PayController extends BaseController{
 			'fz_time'=>0
 		);
 		
-		if($mtype['type']==2){
+		if($mtype['type']==2 || $mtype['type']==6){
 			$sk_ma['ma_qrcode']=$params['ma_qrcode'];
 		}elseif($mtype['type']==3){
 			$sk_ma['bank_id']=$params['bank_id'];

@@ -124,7 +124,7 @@ position:relative;}
                 <input type="text" id="ma_realname" placeholder="账号对应的真实姓名" style="width:50%;" autocomplete="off" class="layui-input" value="{{d.item.ma_realname||''}}" />
             </div>
         </div>
-        <div class="layui-form-item layui-form-text">
+        <div class="layui-form-item layui-form-text accountBox">
             <label class="layui-form-label"><span>收款账号</span>：</label>
             <div class="layui-input-block">
                 <input type="text" id="ma_account" placeholder="支付宝/微信/手机号/卡号等等" style="width:50%;" autocomplete="off" class="layui-input" value="{{d.item.ma_account||''}}" />
@@ -263,7 +263,7 @@ $('#searchBtn').on('click',function(){
 						}
 					}
 					html+='<div>姓名：'+d.ma_realname+'</div>';
-					html+='<div>账号：'+d.ma_account+'</div>';
+                    html+='<div>账号：'+d.ma_account+'</div>';
 				html+='</div>';
 				return html;
 			}},
@@ -282,7 +282,7 @@ $('#searchBtn').on('click',function(){
 				return html;
 			}},*/
             {field:'ma_qrcode', title: '收款码',width:90,templet:function(d){
-				if(d.mtype_type!=2){
+				if(d.mtype_type!=2 && d.mtype_type!=6){
 					return '/';
 				}
 				var qrcode='<img style="height:40px;" src="'+d.ma_qrcode+'"/ onclick="showImg(this);" >';
@@ -356,6 +356,7 @@ layui.table.on('tool(dataTable)', function(obj){
 //全部隐藏
 function showNone(){
 	$('.bankBox,.codeImgBox,.maxBox,.moneyBox,.uidBox').hide();
+	$('.accountBox').show();
 }
 
 //只显示账号
@@ -375,6 +376,11 @@ function showCode(){
 	$('.codeImgBox').show();
 }
 
+//咸鱼不显示收款帐号
+function hideAccount(){
+    $('.accountBox').hide();
+}
+
 function iniSetInput(mtype_id){
 	var mtype_type=$('#mtype_id').find('option[value="'+mtype_id+'"]').attr('data-type');
 	if(!mtype_type||mtype_id<1){
@@ -392,7 +398,10 @@ function iniSetInput(mtype_id){
 		$('.moneyBox').show();
 	}else if(mtype_type==5){
 		$('.uidBox').show();
-	}
+	}else if (mtype_type==6){
+        showCode();
+	    hideAccount();
+    }
 	$('.maxBox').show();
 }
 ////////////////////////////////////////////////////////
@@ -528,7 +537,7 @@ function saveBtn(ts){
                     mtype_name:$('#mtype_id').find('option[value="'+mtype_id+'"]').text(),
                 };
 				var mtype_type=$('#mtype_id').find('option[value="'+mtype_id+'"]').attr('data-type');
-				if(mtype_type==2){
+				if(mtype_type==2 || mtype_type==6){
 					uitem.ma_qrcode=cover;
 				}else if(mtype_type==3){
 					uitem.bank_id=bank_id;

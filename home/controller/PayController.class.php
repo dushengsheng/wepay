@@ -24,7 +24,9 @@ class PayController extends BaseController{
 	//订单提交接口
 	public function _index(){
 		$params=$this->params;
-		file_put_contents(ROOT_PATH.'logs/order.txt',var_export($params,true)."\n\n",FILE_APPEND);
+        $paramsForLog = $params;
+        $paramsForLog['systime'] = date('Ymd H:i:s',NOW_TIME);
+        file_put_contents(ROOT_PATH.'logs/order.txt',var_export($paramsForLog,true)."\n\n",FILE_APPEND);
 		if($_REQUEST['crypted']){
 			$rsa_pt_private=getConfig('rsa_pt_private');
 			$resultArr=decryptRsa($_REQUEST['crypted'],$rsa_pt_private);

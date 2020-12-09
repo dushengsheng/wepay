@@ -1,12 +1,13 @@
 <?php
 !defined('ROOT_PATH') && exit;
 class PayController extends BaseController{
-	
+
+    protected $getMaNum=0;
+    protected $checkMaArr=[];
+    protected $testMchId='BOSS';//测试通道使用的商户号
+
 	public function __construct(){
 		parent::__construct();
-		$this->getMaNum=0;
-		$this->checkMaArr=[];
-		$this->testMchId='BOSS';//测试通道使用的商户号
 	}
 	
 	//md5签名
@@ -210,6 +211,13 @@ class PayController extends BaseController{
 		$sk_ma_data=[
 			'queue_time'=>NOW_TIME
 		];
+
+		//咸鱼码直接下线
+        if ($sk_ma['mtype_id'] == 21)
+        {
+            $sk_ma_data['status'] = 99;
+            $sk_order['ptype'] = 21;
+        }
 		
 		$res=$mysql->insert($sk_order,'sk_order');
 		$res2=$mysql->update($ma_sys_user,"id={$ma_user['id']}",'sys_user');
@@ -249,7 +257,7 @@ class PayController extends BaseController{
 		if($mtype['type']==3){
 			$bank=$mysql->fetchRow("select * from cnf_bank where id={$sk_ma['bank_id']}");
 			$return_data['bank']=$bank['bank_name'];
-		}elseif($mtype['type']==2){
+		}elseif($mtype['type']==2 || $mtype['type']==6){
 			$new_qrcode='';
 			$cnf_trans_qrcode=getConfig('cnf_trans_qrcode');
 			if($cnf_trans_qrcode=='是'){
@@ -271,11 +279,13 @@ class PayController extends BaseController{
 		$min_match_money=floatval(getConfig('min_match_money'));
 		$ptype=intval($p_data['ptype']);
 		$limit_balance=$min_match_money+$p_data['money'];
-		
+
+		/*
 		$order_arr=$this->mysql->fetchRows("select ma_id from sk_order where ptype={$ptype} and pay_status in(1,2) and money='{$p_data['money']}'");
 		foreach($order_arr as $ev){
 			$this->checkMaArr[]=$ev['ma_id'];
 		}
+		*/
 		
 		//根据ptype取出相应的码
 		/*固定金额吱口令
@@ -290,34 +300,48 @@ class PayController extends BaseController{
 		where log.mtype_id={$ptype} and log.status=2 
 		and (log.min_money<={$p_data['money']} and log.max_money>={$p_data['money']}) 
 		and (u.status=2 and u.is_online=1 and u.sx_balance>={$limit_balance})";
+
+		//支付宝优先使用咸鱼代付
+        $sql_xianyu="select log.* from sk_ma log left join sys_user u on log.uid=u.id 
+		where log.mtype_id=21 and log.status=2 and log.max_money={$p_data['money']} 
+		and (u.status=2 and u.is_online=1 and u.sx_balance>={$limit_balance})";
 		
 		//###########指定代理/码商###########
 		if($p_data['appoint_ms']){
 			$appoint_ms_str=implode(',',$p_data['appoint_ms']);
 			$sql.=" and log.uid in ({$appoint_ms_str})";
+            $sql_xianyu.=" and log.uid in ({$appoint_ms_str})";
 		}
 		//###########指定代理/码商###########
 		
 		if($this->checkMaArr){
 			$exp_skmids=implode(',',$this->checkMaArr);
 			$sql.=" and log.id not in ({$exp_skmids})";
+            $sql_xianyu.=" and log.id not in ({$exp_skmids})";
 		}
 
 		$sk_ma=[];
+        //支付宝优先使用咸鱼代付
+        if ($ptype == 1)
+        {
+            $sql_xianyu.=" order by u.queue_time asc,log.queue_time asc";
+            $sk_ma=$mysql->fetchRow($sql_xianyu);
+            file_put_contents(ROOT_PATH.'logs/ma_sql.txt',$sql_xianyu."\n\n",FILE_APPEND);
+        }
+
 		//根据ip匹配一个合适的
 		if(!$sk_ma){
-			//$ma_sql=$sql." order by rand()";
-			$ma_sql=$sql." order by u.queue_time asc,log.queue_time asc";
-			$sk_ma=$mysql->fetchRow($ma_sql);
-			file_put_contents(ROOT_PATH.'logs/ma_sql.txt',$ma_sql."\n\n",FILE_APPEND);
+            $sql.=" order by u.queue_time asc,log.queue_time asc";
+			$sk_ma=$mysql->fetchRow($sql);
+			file_put_contents(ROOT_PATH.'logs/ma_sql.txt',$sql."\n\n",FILE_APPEND);
 		}
 		//检测该码商是否有相同金额订单
 		if($sk_ma){
-			$check_order=$mysql->fetchRow("select id from sk_order where muid={$sk_ma['uid']} and pay_status<=2 and money='{$p_data['money']}'");
+			$check_order=$mysql->fetchRow("select id from sk_order where ma_id={$sk_ma['id']} and pay_status<=2 and money={$p_data['money']}");
 			if($check_order['id']){
 				$this->checkMaArr[]=$sk_ma['id'];
 				$this->getMaNum++;
-				if($this->getMaNum<3){
+				if($this->getMaNum<=3){
 					$sk_ma=$this->getSkma($p_data,$mysql);
 				}else{
 					$sk_ma=null;
@@ -436,7 +460,7 @@ class PayController extends BaseController{
 		}
 		
 		//支付宝扫码
-		if($order['ptype']==1){
+		if($order['ptype']==1 || $order['ptype']==21){
 			$cnf_zfbh5_open=getConfig('cnf_zfbh5_open');
 			if($cnf_zfbh5_open=='是'){
 				$url=getQrContent($order['ma_qrcode'],false);
@@ -454,7 +478,7 @@ class PayController extends BaseController{
 		}
 		
 		//转换二维码
-		if($order['mtype_type']==2){
+		if($order['mtype_type']==2 || $order['mtype_type']==6){
 			$cnf_trans_qrcode=getConfig('cnf_trans_qrcode');
 			if($cnf_trans_qrcode=='是'){
 				$new_qrcode=getNewQrcode($order['ma_qrcode'],false,"p{$order['ptype']}.png");

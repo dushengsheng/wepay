@@ -130,13 +130,13 @@ position:relative;}
                 <input type="text" id="ma_account" placeholder="支付宝/微信/手机号/卡号等等" style="width:50%;" autocomplete="off" class="layui-input" value="{{d.item.ma_account||''}}" />
             </div>
         </div>
-        <div class="layui-form-item layui-form-text maxBox" style="display:none;">
+        <div class="layui-form-item layui-form-text minBox">
             <label class="layui-form-label"><span>单笔最小</span>：</label>
             <div class="layui-input-block">
                 <input type="text" id="min_money" placeholder="" style="width:50%;" autocomplete="off" class="layui-input" value="{{d.item.min_money||[['cnf_skm_min_money'|getConfig]]}}" />
             </div>
         </div>
-        <div class="layui-form-item layui-form-text maxBox" style="display:none;">
+        <div class="layui-form-item layui-form-text maxBox">
             <label class="layui-form-label"><span>单笔最大</span>：</label>
             <div class="layui-input-block">
                 <input type="text" id="max_money" placeholder="" style="width:50%;" autocomplete="off" class="layui-input" value="{{d.item.max_money||[['cnf_skm_max_money'|getConfig]]}}" [[if $user.gid gt 41]]disabled[[/if]] />
@@ -355,8 +355,9 @@ layui.table.on('tool(dataTable)', function(obj){
 ////////////////////////////////////////////////////////
 //全部隐藏
 function showNone(){
-	$('.bankBox,.codeImgBox,.maxBox,.moneyBox,.uidBox').hide();
-	$('.accountBox').show();
+	$('.bankBox,.codeImgBox,.moneyBox,.uidBox').hide();
+    $('.maxBox label span').text('单笔最大');
+    $('.accountBox label span').text('收款账号');
 }
 
 //只显示账号
@@ -377,8 +378,9 @@ function showCode(){
 }
 
 //咸鱼不显示收款帐号
-function hideAccount(){
-    $('.accountBox').hide();
+function changeText(){
+    $('.maxBox label span').text('代付金额');
+    $('.accountBox label span').text('码描述');
 }
 
 function iniSetInput(mtype_id){
@@ -400,9 +402,8 @@ function iniSetInput(mtype_id){
 		$('.uidBox').show();
 	}else if (mtype_type==6){
         showCode();
-	    hideAccount();
+        changeText();
     }
-	$('.maxBox').show();
 }
 ////////////////////////////////////////////////////////
 

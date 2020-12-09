@@ -255,8 +255,12 @@ class PayController extends BaseController{
 		if(!$params['ma_realname']){
 			jReturn('-1','请填写收款姓名');
 		}
-		if(!$params['ma_account'] && $mtype['type']!=6){
-			jReturn('-1','请填写收款账号');
+		if(!$params['ma_account']){
+		    if ($mtype['type']==6) {
+                jReturn('-1','请填写二维码描述');
+            }else {
+                jReturn('-1','请填写收款账号');
+            }
 		}
 		
 		if($mtype['type']==1){

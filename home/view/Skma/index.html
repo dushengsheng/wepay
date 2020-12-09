@@ -229,8 +229,9 @@ $(function(){
 	//全部隐藏
 	function showNone(){
 		$('.bankBox,.codeImgBox,.moneyBox,.uidBox').hide();
+		$('.accountBox p').text('收款账号：');
 		$('.maxBox p').text('最大收款：');
-		$('.accountBox').show();
+		$('#ma_account').attr('placeholder', '支付宝/微信/手机号/卡号');
 	}
 	
 	//只显示账号
@@ -239,9 +240,10 @@ $(function(){
 	}
 
 	//咸鱼不显示收款账号
-	function hideAccount(){
-		$('.accountBox').hide();
+	function changeText(){
+		$('.accountBox p').text('二维码描述：');
 		$('.maxBox p').text('代支付金额：');
+		$('#ma_account').attr('placeholder', '便于分辨的标识，避免多个码混淆不清');
 	}
 	
 	//显示银行信息
@@ -272,10 +274,9 @@ $(function(){
 			$('.moneyBox').show();
 		}else if(mtype_type==5){
 			$('.uidBox').show();
-		}
-		else if (mtype_type==6){
+		}else if (mtype_type==6){
 			showCode();
-			hideAccount();
+			changeText();
 		}else{
 			//$('.maxBox').show();
 		}
@@ -524,7 +525,11 @@ $(function(){
 					class_flag='off-line';
 				}
 				html+='<p class="statusItem">状态：<span class="state '+class_flag+'">'+item.status_flag+'</span></p>';
-				html+='<p class="maaccountItem">收款号：'+item.ma_account+'</p>';
+				if (item.mtype_type==6) {
+					html+='<p class="maaccountItem">描述：'+item.ma_account+'</p>';
+				}else {
+					html+='<p class="maaccountItem">收款号：'+item.ma_account+'</p>';
+				}
 				html+='<p>最大收款：'+item.max_money+'</p>';
 				html+='<p>提成：'+item.yong_money+'</p>';
 				html+='<p>成功率：'+item.day_percent+'</p>';

@@ -98,16 +98,26 @@ class PayController extends BaseController{
 			jReturn('-1',"商户单号已存在，请勿重复提交 {$p_data['order_sn']}");
 		}
 
-		//支付宝通道优先使用咸鱼码
+		//商户咸鱼通道是否开启
+        $merchant_xianyu_open = false;
+		if ($user['td_switch'][21]) {
+            $merchant_xianyu_open = true;
+        }
+        $p_data['merchant_xianyu_open'] = $merchant_xianyu_open;
+
+        //系统咸鱼通道是否开启
+        $channel_xianyu_open = false;
         $mtype = array();
-		if ($ptype == 1)
-        {
+		if ($ptype == 1) {
             $mtype=$mysql->fetchRow("select * from sk_mtype where id=21 and is_open=1");
-            if (!$mtype)
-            {
+            if (!$mtype) {
                 $mtype=$mysql->fetchRow("select * from sk_mtype where id=1 and is_open=1");
+            }else {
+                $channel_xianyu_open = true;
             }
         }
+        $p_data['channel_xianyu_open'] = $channel_xianyu_open;
+
 		if(!$mtype){
 			jReturn('-1','不存在该支付类型或未开放');
 		}else{
@@ -322,7 +332,7 @@ class PayController extends BaseController{
 
 		$sk_ma=[];
         //支付宝优先使用咸鱼代付
-        if ($ptype == 1)
+        if ($ptype == 1 && $p_data['merchant_xianyu_open'] && $p_data['channel_xianyu_open'])
         {
             $sql_xianyu.=" order by u.queue_time asc,log.queue_time asc";
             $sk_ma=$mysql->fetchRow($sql_xianyu);

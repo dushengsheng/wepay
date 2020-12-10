@@ -53,7 +53,7 @@
 				<div class="wxTips">
 					微信“我”→“支付”→“收付款”→“向手机号转帐”→填写手机号→输入转帐金额点确定完成转账。<br>转账金额和手机号必须与订单完全一致，否则将无法完成。
 				</div>
-				[[else]]
+				[[elseif $info.mtype_id neq 21]]
 				<p style="text-align:center;">姓名：[[$info.ma_realname2]]</p>
 				[[/if]]
 			[[/if]]

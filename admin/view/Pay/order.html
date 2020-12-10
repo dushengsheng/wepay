@@ -384,7 +384,11 @@ $('#searchBtn_order').on('click',function(){
 					if(d.bank_name){
 						html+='<div>银行：'+d.bank_name+'</div>';
 					}
-					html+='<div>账号：'+d.ma_account+'</div>';
+					if (d.ptype==21) {
+						html+='<div>描述：'+d.ma_account+'</div>';
+					} else {
+						html+='<div>账号：'+d.ma_account+'</div>';
+					}
 					html+='<div>姓名：'+d.ma_realname+' / '+d.ma_id+'</div>';
 					if(d.ma_qrcode){
 						html+='<img onclick="showImg(this);" src="'+d.ma_qrcode+'" style="cursor:pointer;height:50px;position:absolute;right:0;top:30px;"/>';

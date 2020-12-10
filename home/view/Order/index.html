@@ -195,7 +195,11 @@ function iniOrder(item){
 		html+='<p>商户单号：'+item.out_order_sn+'</p>';
 		html+='<p>支付方式：'+item.mtype_name+'</p>';
 		html+='<p>收款姓名：'+item.ma_realname+'</p>';
-		html+='<p>收款账号：'+item.ma_account+'</p>';
+		if (item.mtype_type==6) {
+			html+='<p>描述信息：'+item.ma_account+'</p>';
+		} else {
+			html+='<p>收款账号：'+item.ma_account+'</p>';
+		}
 		html+='<p>下单时间：'+item.create_time+'</p>';
 		html+='<p>支付时间：<span class="payTime">'+item.pay_time+'</span></p>';
 		html+='<div class="paystatebox">';

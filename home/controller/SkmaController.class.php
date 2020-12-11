@@ -298,7 +298,7 @@ class SkmaController extends BaseController{
 		$sk_ma=[];
 		if($skma['status']==1){
 			if(NOW_TIME<$skma['fz_time']){
-				jReturn('-1','请测试回调之后再上线');
+				jReturn('-1','新码首次上线需管理员审核');
 			}
 			$sk_ma['status']=2;
 			

@@ -368,8 +368,8 @@ $('#searchBtn_order').on('click',function(){
 			[[if $user.gid lt 42 or in_array($user.gid,[61,81])]]
 			/*{field:'fee', title: '手续费'},
 			{field:'real_money', title: '应结算'},*/
-			{field:'order_ip', title: '下单ip'},
-            {field:'su_account',width:130, title: '所属商户',templet:function(d){
+			{field:'order_ip', title: '下单ip', width:140},
+            {field:'su_account',width:100, title: '所属商户',templet:function(d){
                 return d.su_account+'<br>'+d.su_nickname;
             }},
 			[[/if]]
@@ -411,7 +411,7 @@ $('#searchBtn_order').on('click',function(){
 				}
 				return html;
             }},*/
-			{field:'up_user',width:130,title: '上级代理',templet:function(d){
+			{field:'up_user',width:100,title: '上级代理',templet:function(d){
 				var html='';
 				if(!d.up_arr||d.up_arr.length<1){
 					return html;
@@ -442,7 +442,7 @@ $('#searchBtn_order').on('click',function(){
             {field:'pay_status_flag', title: '支付状态'},
             {field:'pay_time',width:130,title: '支付时间'},
             {field:'notice_status_flag', title: '通知状态'},
-            {field:'notice_msg', title: '回复内容'},
+            /*{field:'notice_msg', title: '回复内容'},*/
 			[[if $isOrderHk]]
             {field:'hk_status_flag',width:100,title: '回款状态',templet:function(d){
 				if(d.pay_status!=9){

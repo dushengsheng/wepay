@@ -247,10 +247,10 @@ class PayController extends BaseController{
 			'remark'=>'新订单通知码商'
 		];
 		$mysql->insert($cnf_notice,'cnf_notice');
-		
+
+        $payurl="{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['HTTP_HOST']}/".APP_URL."?c=Pay&a=info&osn={$sk_order['order_sn']}";
 		if($p_data['format']!='json'){
-			$url="/?c=Pay&a=info&osn={$sk_order['order_sn']}";
-			header("Location:{$url}");
+			header("Location:{$payurl}");
 			exit;
 		}
 
@@ -261,6 +261,7 @@ class PayController extends BaseController{
 			'realname'=>$sk_ma['ma_realname'],
 			'account'=>$sk_ma['ma_account'],
 			'money'=>$p_data['money'],
+            'payurl'=>$payurl,
 			'bank'=>'',
 			'qrcode'=>''
 		];

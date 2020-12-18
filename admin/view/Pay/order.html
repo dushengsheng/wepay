@@ -465,7 +465,7 @@ $('#searchBtn_order').on('click',function(){
 					html+='<span>手续费：'+res.odata.sum_fee+'</span>';
 					[[/if]]
 				html+='</div>';
-                $('.layui-table-page').before(html); 
+                $('.layui-table-header').before(html);
             }
 			$('.isFinishFlag').each(function(i,o){
 				var obj=$(o);

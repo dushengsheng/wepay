@@ -198,6 +198,7 @@ $('#LAY-user-login-submit').on('click',function(){
         key: global.tokenName,
         value: json.data.token
       });
+
       _alert(json.msg,{icon:1},function(){
         //location.href=global.appurl;
 		location.href='[[$callback]]';

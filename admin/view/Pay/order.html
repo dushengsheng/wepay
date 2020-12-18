@@ -84,12 +84,13 @@
 				</div>
 			</div>
 			<div class="layui-inline">
-				<label class="layui-form-label" style="width:60px;">订单创建</label>
+				<label class="layui-form-label" style="width:60px;">所属商户</label>
 				<div class="layui-input-inline" style="width:120px;">
-					<select id="s_is_create" name="s_is_create">
+					<select id="s_merchant_id" name="s_merchant_id">
 						<option value="0">全部</option>
-						<option value="1">后台创建</option>
-						<option value="2">前台创建</option>
+						[[foreach $merchant_list as $item]]
+						<option value="[[$item.id]]">[[$item.account]]</option>
+						[[/foreach]]
 					</select>
 				</div>
 			</div>
@@ -341,7 +342,7 @@ $('#searchBtn_order').on('click',function(){
         s_pay_status:$.trim($('#s_pay_status').val()),
         s_notice_status:$.trim($('#s_notice_status').val()),
 		s_hk_status:$.trim($('#s_hk_status').val()),
-		s_is_create:$.trim($('#s_is_create').val()),
+		s_merchant_id:$.trim($('#s_merchant_id').val()),
         s_start_time:$.trim($('#s_start_time_order').val()),
         s_end_time:$.trim($('#s_end_time_order').val())
     };

@@ -103,21 +103,46 @@ class PayController extends BaseController{
 		$td_switch=json_decode($user['td_switch'],true);
 		$td_switch_arr=[];
 		if($td_switch.length >0){
-		foreach($td_switch as $tk=>$tv){
-			if($tv<1){
-				continue;
-			}
-			$td_switch_arr[]=$tk;
-		}
+            foreach($td_switch as $tk=>$tv){
+                if($tv<1){
+                    continue;
+                }
+                $td_switch_arr[]=$tk;
+            }
 		}
 		$td_switch_str=implode(',',$td_switch_arr);
 		$where="where is_open=1";
-		if($pageuser['gid']>41){
+		if($user['gid']>41){
 			$where.=" and id in ({$td_switch_str})";
 		}
 		$mtype_arr=rows2arr($this->mysql->fetchRows("select * from sk_mtype {$where}"));
 		return $mtype_arr;
 	}
+
+	//获取用户可查看的商户列表
+    //新版本构建中，旧版本未考虑权限问题
+    private function getMerchantList($user)
+    {
+	    $gid = $user['gid'];
+	    $sql = "select * from sys_user";
+	    //商户代理 / 商户 / 码商代理
+	    if ($gid == 61 || $gid == 81 || $gid == 85) {
+	        $userlist = getDownUser($user['id']);
+            if ($userlist) {
+                $uid_str = implode(',', $userlist);
+                $sql .= " where id in ({$uid_str}) and gid in (61, 81)";
+            } else {
+                return [];
+            }
+        } elseif ($gid <= 41) {
+	        // 管理员
+            $sql .= " where gid in (61, 81)";
+        } else {
+	        return [];
+        }
+
+	    return $this->mysql->fetchRows($sql);
+    }
 	
 	public function _skma_list(){
 		$pageuser=checkLogin();
@@ -434,6 +459,7 @@ class PayController extends BaseController{
 		$pageuser=checkPower();
 		$user=$this->mysql->fetchRow("select * from sys_user where id={$pageuser['id']}");
 		$mtype_arr=$this->getMtype($user);
+		$merchant_list = $this->getMerchantList($user);
 		$isOrderHk=0;
 		if($pageuser['gid']<42||in_array($pageuser['gid'],[85,91])){
 			$cnf_mshk_signle=getConfig('cnf_mshk_signle');
@@ -444,6 +470,7 @@ class PayController extends BaseController{
 		$data=[
 			'user'=>$user,
 			'mtype_arr'=>$mtype_arr,
+            'merchant_list'=>$merchant_list,
 			'isOrderHk'=>$isOrderHk,
 			'create'=>hasPower($pageuser,'Pay_order_create')?1:0
 		];
@@ -472,7 +499,8 @@ class PayController extends BaseController{
 		$where.=empty($params['s_mtype_id'])?'':" and log.ptype={$params['s_mtype_id']}";
 		$where.=empty($params['s_pay_status'])?'':" and log.pay_status={$params['s_pay_status']}";
 		$where.=empty($params['s_notice_status'])?'':" and log.notice_status={$params['s_notice_status']}";
-		
+
+		/*
 		if($params['s_is_create']){
 			if($params['s_is_create']==1){
 				$where.=" and log.is_create={$params['s_is_create']}";
@@ -480,6 +508,19 @@ class PayController extends BaseController{
 				$where.=" and log.is_create=0";
 			}
 		}
+		*/
+        if ($params['s_merchant_id']) {
+            $merchant = $this->mysql->fetchRow("select * from sys_user where id = {$params['s_merchant_id']}");
+            if ($merchant) {
+                $merchant_list = $this->getMerchantList($merchant);
+                $merchant_id_list[] = $merchant['id'];
+                foreach ($merchant_list as $item) {
+                    $merchant_id_list[] = $item['id'];
+                }
+                $merchant_id_str = implode(',', $merchant_id_list);
+                $where .= " and log.suid in ({$merchant_id_str})";
+            }
+        }
 		
 		if(isset($params['s_hk_status'])&&$params['s_hk_status']!='all'){
 			$params['s_hk_status']=intval($params['s_hk_status']);

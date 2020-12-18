@@ -329,7 +329,7 @@ $('#s_keyword').on('keyup',function(e){
 });
 //------------------------订单------------
 
- layui.laydate.render({elem:'#s_start_time_order', format: 'yyyy-MM-dd'});
+layui.laydate.render({elem:'#s_start_time_order', format: 'yyyy-MM-dd'});
 layui.laydate.render({elem:'#s_end_time_order', format: 'yyyy-MM-dd'});
 
 $('#searchBtn_order').on('click',function(){
@@ -458,8 +458,8 @@ $('#searchBtn_order').on('click',function(){
             //console.log(res);
             if($('.sumLine').length<1){
 				var html='<div class="sumLine">';
-					html+='<span>订单数：'+res.odata.count+'</span>';
-					html+='<span>订单总额：'+res.odata.sum_money+'</span>';
+					html+='<span>订单数：' + res.odata.count_succeed + '/' + res.odata.count + '</span>';
+					html+='<span>订单总额：' + res.odata.sum_money_succeed + '/' + res.odata.sum_money + '</span>';
 					[[if $user.gid lt 42 or in_array($user.gid,[61,81])]]
 					html+='<span>应结算：'+res.odata.sum_real_money+'</span>';
 					html+='<span>手续费：'+res.odata.sum_fee+'</span>';

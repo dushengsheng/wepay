@@ -548,6 +548,10 @@ class PayController extends BaseController{
 		left join sk_mtype mt on log.ptype=mt.id
 		left join sys_user mu on log.muid=mu.id {$where}";
 		$count_item=$this->mysql->fetchRow($sql_cnt);
+
+		$sql_cnt_succeed = $sql_cnt . " and log.pay_status = 9";
+        $count_item_succeed = $this->mysql->fetchRow($sql_cnt_succeed);
+
 		$sql="select log.*,su.account as su_account,su.nickname as su_nickname,
 		mu.account as mu_account,mu.nickname as mu_nickname,mt.name as mtype_name,bk.bank_name 
 		from sk_order log 
@@ -597,7 +601,9 @@ class PayController extends BaseController{
 		$data=array(
 			'list'=>$list,
 			'count'=>$count_item['cnt'],
+            'count_succeed'=>$count_item_succeed['cnt'],
 			'sum_money'=>floatval($count_item['sum_money']),
+            'sum_money_succeed'=>floatval($count_item_succeed['sum_money']),
 			'sum_fee'=>floatval($count_item['sum_fee']),
 			'sum_real_money'=>floatval($count_item['sum_real_money']),
 			'limit'=>$this->pageSize
